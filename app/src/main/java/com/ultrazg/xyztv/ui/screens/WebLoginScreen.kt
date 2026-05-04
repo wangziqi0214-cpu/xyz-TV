@@ -1,0 +1,813 @@
+@file:OptIn(androidx.tv.material3.ExperimentalTvMaterial3Api::class)
+
+package com.ultrazg.xyztv.ui.screens
+
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.net.Uri
+import android.view.ViewGroup
+import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.tv.material3.ClickableSurfaceDefaults
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Text
+import coil.compose.AsyncImage
+import com.ultrazg.xyztv.data.AppLogger
+import com.ultrazg.xyztv.data.TokenManager
+
+internal const val loginUserAgent =
+    "Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36"
+
+private const val loginClientId = "xyz-web"
+private const val loginUrl =
+    "https://accounts.xiaoyuzhoufm.com/login?clientId=$loginClientId&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F"
+private const val loginBridgeName = "AndroidLoginBridge"
+
+private val cookieUrls = listOf(
+    "https://accounts.xiaoyuzhoufm.com/",
+    "https://podcaster.xiaoyuzhoufm.com/",
+    "https://api.xiaoyuzhoufm.com/",
+    "https://xiaoyuzhoufm.com/"
+)
+
+private data class LoginQrSnapshot(
+    val preview: String = "",
+    val link: String = ""
+)
+
+@Composable
+fun WebLoginScreen(
+    onBack: () -> Unit,
+    onLoginSuccess: () -> Unit
+) {
+    var pageStatus by remember { mutableStateOf("Opening official login page...") }
+    var activeUrl by remember { mutableStateOf(loginUrl) }
+    var completed by remember { mutableStateOf(false) }
+    var webViewRef by remember { mutableStateOf<WebView?>(null) }
+    var qrSnapshot by remember { mutableStateOf(LoginQrSnapshot()) }
+
+    DisposableEffect(Unit) {
+        AppLogger.action("navigate", "web-login")
+        AppLogger.info("web-login", "Opening official login URL: $loginUrl")
+        onDispose {
+            AppLogger.info("web-login", "Leaving official web login screen")
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(20.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 140.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
+        ) {
+            OfficialLoginWebView(
+                onWebViewReady = { webViewRef = it },
+                onPageStatus = { status ->
+                    pageStatus = status
+                },
+                onUrlChanged = { url ->
+                    activeUrl = url
+                },
+                onQrDetected = { preview, link ->
+                    qrSnapshot = LoginQrSnapshot(preview = preview, link = link)
+                },
+                onTokensCaptured = { accessToken, refreshToken ->
+                    if (completed) return@OfficialLoginWebView
+                    completed = true
+                    TokenManager.accessToken = accessToken
+                    TokenManager.refreshToken = refreshToken
+                    AppLogger.info(
+                        "web-login",
+                        "Captured auth cookies successfully tokenPrefix=${accessToken.take(12)}"
+                    )
+                    onLoginSuccess()
+                }
+            )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                .padding(16.dp)
+                .align(Alignment.TopStart)
+        ) {
+            Text(
+                text = "Official Web Login",
+                color = Color(0xFF020303),
+                fontSize = 28.sp,
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = pageStatus,
+                color = Color(0xFFFFCC80),
+                fontSize = 15.sp
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                androidx.tv.material3.Surface(
+                    onClick = {
+                        AppLogger.action("web_login_refresh", activeUrl)
+                        webViewRef?.reload()
+                    },
+                    shape = ClickableSurfaceDefaults.shape(shape = MaterialTheme.shapes.small),
+                    colors = ClickableSurfaceDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.width(170.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.padding(vertical = 14.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Reload", color = Color(0xFF020303), fontSize = 16.sp)
+                    }
+                }
+                androidx.tv.material3.Surface(
+                    onClick = {
+                        AppLogger.action("web_login_back", "return to login landing")
+                        onBack()
+                    },
+                    shape = ClickableSurfaceDefaults.shape(shape = MaterialTheme.shapes.small),
+                    colors = ClickableSurfaceDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.width(170.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.padding(vertical = 14.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Back", color = Color(0xFF020303), fontSize = 16.sp)
+                    }
+                }
+            }
+            Text(
+                text = if (qrSnapshot.preview.isBlank()) {
+                    "The app keeps watching the official page and will switch to QR login when the tab becomes available."
+                } else {
+                    "二维码已经同步到右侧卡片里了，直接用手机扫码即可。"
+                },
+                color = Color(0xFFB0BEC5),
+                fontSize = 13.sp
+            )
+            Text(
+                text = activeUrl,
+                color = Color(0xFF90CAF9),
+                fontSize = 12.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        if (qrSnapshot.preview.isNotBlank()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .width(280.dp)
+                    .align(Alignment.CenterEnd)
+                    .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small)
+                    .padding(horizontal = 18.dp, vertical = 20.dp)
+            ) {
+                Text(
+                    text = "二维码登录",
+                    color = Color(0xFF020303),
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                AsyncImage(
+                    model = qrSnapshot.preview,
+                    contentDescription = "Login QR code",
+                    modifier = Modifier
+                        .width(220.dp)
+                        .height(220.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
+                        .padding(10.dp)
+                )
+                Text(
+                    text = if (qrSnapshot.link.isNotBlank()) qrSnapshot.link else "二维码已从网页同步出来",
+                    color = Color(0xFF9ED2FF),
+                    fontSize = 11.sp,
+                    maxLines = 4
+                )
+            }
+        }
+    }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+private fun OfficialLoginWebView(
+    onWebViewReady: (WebView?) -> Unit,
+    onPageStatus: (String) -> Unit,
+    onUrlChanged: (String) -> Unit,
+    onQrDetected: (preview: String, link: String) -> Unit,
+    onTokensCaptured: (accessToken: String, refreshToken: String?) -> Unit
+) {
+    AndroidView(
+        factory = { context ->
+            val cookieManager = CookieManager.getInstance()
+            cookieManager.setAcceptCookie(true)
+            val bridge = OfficialLoginBridge(
+                onPageStatus = onPageStatus,
+                onQrDetected = onQrDetected
+            )
+
+            WebView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                onWebViewReady(this)
+                isFocusable = true
+                isFocusableInTouchMode = true
+                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.databaseEnabled = true
+                settings.useWideViewPort = false
+                settings.loadWithOverviewMode = true
+                settings.mediaPlaybackRequiresUserGesture = false
+                settings.cacheMode = WebSettings.LOAD_DEFAULT
+                settings.builtInZoomControls = true
+                settings.displayZoomControls = false
+                settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+                settings.userAgentString = loginUserAgent
+                setInitialScale(100)
+                addJavascriptInterface(bridge, loginBridgeName)
+
+                fun checkCookies(trigger: String) {
+                    val tokens = extractTokensFromCookies()
+                    if (tokens != null) {
+                        AppLogger.info(
+                            "web-login",
+                            "Token cookies detected via $trigger url=${url.orEmpty()}"
+                        )
+                        onPageStatus("Login cookies captured. Returning to app...")
+                        onTokensCaptured(tokens.first, tokens.second)
+                    }
+                }
+
+                webChromeClient = WebChromeClient()
+                webViewClient = object : WebViewClient() {
+                    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                        val safeUrl = url.orEmpty()
+                        onUrlChanged(safeUrl)
+                        onPageStatus("Loading official page...")
+                        AppLogger.info("web-login", "pageStarted $safeUrl")
+                        checkCookies("pageStarted")
+                    }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        val safeUrl = url.orEmpty()
+                        onUrlChanged(safeUrl)
+                        onPageStatus("Use the official page to sign in. The app will return automatically after cookies appear.")
+                        AppLogger.info("web-login", "pageFinished $safeUrl")
+                        evaluateJavascript(
+                            loginAutomationScript()
+                        ) { result ->
+                            AppLogger.info("web-login", "pageReady result=$result")
+                        }
+                        CookieManager.getInstance().flush()
+                        checkCookies("pageFinished")
+                    }
+
+                    override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                        val safeUrl = url.orEmpty()
+                        onUrlChanged(safeUrl)
+                        AppLogger.info("web-login", "visited $safeUrl reload=$isReload")
+                        checkCookies("history")
+                    }
+
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                        error: WebResourceError?
+                    ) {
+                        if (request?.isForMainFrame == true) {
+                            val errorText = "${error?.errorCode ?: -1} ${error?.description ?: "unknown"}"
+                            onPageStatus("Web login page failed: $errorText")
+                            AppLogger.warn("web-login", "main frame error $errorText")
+                        }
+                    }
+                }
+
+                loadUrl(loginUrl)
+            }
+        },
+        onRelease = { webView ->
+            onWebViewReady(null)
+            webView.stopLoading()
+            webView.webChromeClient = null
+            webView.webViewClient = WebViewClient()
+            webView.removeJavascriptInterface(loginBridgeName)
+            webView.removeAllViews()
+            webView.destroy()
+        },
+        update = { webView ->
+            if (webView.url.isNullOrBlank()) {
+                webView.loadUrl(loginUrl)
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+private class OfficialLoginBridge(
+    private val onPageStatus: (String) -> Unit,
+    private val onQrDetected: (preview: String, link: String) -> Unit
+) {
+    @JavascriptInterface
+    fun onStatus(status: String) {
+        onPageStatus(status)
+    }
+
+    @JavascriptInterface
+    fun onQrDetected(preview: String?, link: String?) {
+        onQrDetected(preview.orEmpty(), link.orEmpty())
+    }
+
+    @JavascriptInterface
+    fun onDebug(message: String?) {
+        AppLogger.info("web-login", "bridge-debug ${message.orEmpty()}")
+    }
+}
+
+internal fun loginAutomationScript(): String = """
+    (function() {
+      try {
+        if (window.__xyzLoginBridgeTick) {
+          return window.__xyzLoginBridgeTick();
+        }
+        var bridge = window.$loginBridgeName;
+        function postStatus(message) {
+          if (bridge && bridge.onStatus) bridge.onStatus(String(message || ''));
+        }
+        function postQr(preview, link) {
+          if (bridge && bridge.onQrDetected) bridge.onQrDetected(String(preview || ''), String(link || ''));
+        }
+        function postDebug(message) {
+          if (bridge && bridge.onDebug) bridge.onDebug(String(message || ''));
+        }
+        function normalizeUrl(value) {
+          if (!value) return '';
+          try { return new URL(value, window.location.href).toString(); } catch (e) { return value; }
+        }
+        function normalizeText(text) {
+          return String(text || '').replace(/\s+/g, '').replace(/[·•]/g, '');
+        }
+        function keywordMatch(text) {
+          var normalized = normalizeText(text);
+          return ['二维码登录', '扫码登录', '扫码', 'QRCode', 'qrcode'].some(function(keyword) {
+            return normalized.indexOf(keyword) >= 0;
+          });
+        }
+        function exactQrLabel(text) {
+          var normalized = normalizeText(text);
+          return normalized === '二维码登录' || normalized === '扫码登录';
+        }
+        function exactPhoneLabel(text) {
+          return normalizeText(text) === '手机号登录';
+        }
+        function isVisible(node) {
+          if (!node || !node.getBoundingClientRect) return false;
+          var rect = node.getBoundingClientRect();
+          var style = window.getComputedStyle ? window.getComputedStyle(node) : null;
+          return rect.width > 0 && rect.height > 0 && (!style || (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0'));
+        }
+        function describeNode(node) {
+          if (!node) return 'null';
+          var tag = (node.tagName || '').toLowerCase();
+          var id = node.id ? ('#' + node.id) : '';
+          var className = '';
+          if (typeof node.className === 'string' && node.className.trim()) {
+            className = '.' + node.className.trim().replace(/\s+/g, '.').slice(0, 60);
+          }
+          return (tag + id + className).slice(0, 96);
+        }
+        function candidateNodes() {
+          var nodes = Array.prototype.slice.call(document.querySelectorAll('button, a, [role="button"], [role="tab"], div, span, p'));
+          return nodes.filter(function(node) {
+            return isVisible(node) && keywordMatch(node.innerText || node.textContent || '');
+          });
+        }
+        function exactLabelNodes() {
+          return candidateNodes().filter(function(node) {
+            return exactQrLabel(node.innerText || node.textContent || '');
+          });
+        }
+        function nodeHasTabSiblings(node) {
+          if (!node || !node.parentElement) return false;
+          var siblings = Array.prototype.slice.call(node.parentElement.children || []);
+          var labels = siblings
+            .filter(isVisible)
+            .map(function(sibling) { return normalizeText(sibling.innerText || sibling.textContent || ''); });
+          return labels.some(function(label) { return exactPhoneLabel(label); }) &&
+            labels.some(function(label) { return exactQrLabel(label); });
+        }
+        function scoreTabCandidate(node, depth) {
+          if (!node || !isVisible(node)) return -1;
+          var score = 0;
+          var text = normalizeText(node.innerText || node.textContent || '');
+          var role = (node.getAttribute && node.getAttribute('role')) || '';
+          var tag = (node.tagName || '').toLowerCase();
+          var className = typeof node.className === 'string' ? node.className.toLowerCase() : '';
+          if (exactQrLabel(text)) score += 60;
+          if (keywordMatch(text)) score += 12;
+          if (nodeHasTabSiblings(node)) score += 80;
+          if (role === 'tab') score += 40;
+          if (tag === 'button' || tag === 'a') score += 24;
+          if (node.tabIndex >= 0) score += 12;
+          if (className.indexOf('tab') >= 0 || className.indexOf('segment') >= 0 || className.indexOf('switch') >= 0) score += 18;
+          if (node.getAttribute && node.getAttribute('onclick') != null) score += 10;
+          score -= depth * 6;
+          return score;
+        }
+        function closestClickable(node) {
+          var current = node;
+          while (current && current !== document.body) {
+            if (!isVisible(current)) {
+              current = current.parentElement;
+              continue;
+            }
+            var role = (current.getAttribute && current.getAttribute('role')) || '';
+            var tag = (current.tagName || '').toLowerCase();
+            var tabIndex = current.tabIndex;
+            var onclick = current.getAttribute && current.getAttribute('onclick');
+            if (tag === 'button' || tag === 'a' || role === 'button' || role === 'tab' || tabIndex >= 0 || onclick != null) {
+              return current;
+            }
+            current = current.parentElement;
+          }
+          return node;
+        }
+        function findBestTabTarget() {
+          var labels = exactLabelNodes();
+          var bestNode = null;
+          var bestScore = -1;
+          labels.forEach(function(label) {
+            var current = label;
+            for (var depth = 0; current && current !== document.body && depth < 6; depth += 1) {
+              var candidate = closestClickable(current) || current;
+              var score = scoreTabCandidate(candidate, depth);
+              if (score > bestScore) {
+                bestScore = score;
+                bestNode = candidate;
+              }
+              score = scoreTabCandidate(current, depth + 1);
+              if (score > bestScore) {
+                bestScore = score;
+                bestNode = current;
+              }
+              current = current.parentElement;
+            }
+          });
+          if (bestNode) {
+            postDebug('best-tab-target score=' + bestScore + ' node=' + describeNode(bestNode));
+          }
+          return bestNode;
+        }
+        function findSwitcher() {
+          var visible = candidateNodes();
+          if (visible.length) {
+            postDebug('switcher-candidates=' + visible.slice(0, 6).map(function(node) {
+              return normalizeText(node.innerText || node.textContent || '').slice(0, 24);
+            }).join('|'));
+          }
+          var exact = visible.find(function(node) {
+            return exactQrLabel(node.innerText || node.textContent || '');
+          });
+          return exact || visible[0] || null;
+        }
+        function dispatchClick(target, labelMatcher) {
+          labelMatcher = labelMatcher || exactQrLabel;
+          if (!target) return false;
+          try { target.focus && target.focus(); } catch (e) {}
+          if (target.scrollIntoView) {
+            try { target.scrollIntoView({ block: 'center', inline: 'center' }); } catch (e) {}
+          }
+          var rect = target.getBoundingClientRect ? target.getBoundingClientRect() : null;
+          var centerX = rect ? (rect.left + rect.width / 2) : 0;
+          var centerY = rect ? (rect.top + rect.height / 2) : 0;
+          var stack = (document.elementsFromPoint && rect) ? document.elementsFromPoint(centerX, centerY) : [];
+          if (stack && stack.length) {
+            postDebug('click-stack=' + stack.slice(0, 4).map(describeNode).join('>'));
+          }
+          function uniqueNodes(nodes) {
+            var seen = [];
+            return nodes.filter(function(node) {
+              if (!node) return false;
+              if (seen.indexOf(node) >= 0) return false;
+              seen.push(node);
+              return true;
+            });
+          }
+          function matchingNode(node) {
+            return node && labelMatcher(node.innerText || node.textContent || '');
+          }
+          function findLabelTarget() {
+            var directLabel = target.closest ? target.closest('label') : null;
+            if (matchingNode(directLabel)) return directLabel;
+            var innerLabel = target.querySelector ? target.querySelector('label') : null;
+            if (matchingNode(innerLabel)) return innerLabel;
+            var stackLabel = (stack || []).find(function(node) {
+              return node && node.tagName === 'LABEL' && matchingNode(node);
+            });
+            if (stackLabel) return stackLabel;
+            var siblingLabel = target.parentElement ? Array.prototype.slice.call(target.parentElement.querySelectorAll('label')) : [];
+            return siblingLabel.find(matchingNode) || null;
+          }
+          function findInputTarget(labelTarget) {
+            if (labelTarget) {
+              var nestedInput = labelTarget.querySelector ? labelTarget.querySelector('input') : null;
+              if (nestedInput) return nestedInput;
+              var forId = labelTarget.getAttribute ? labelTarget.getAttribute('for') : '';
+              if (forId) {
+                var byId = document.getElementById(forId);
+                if (byId) return byId;
+              }
+            }
+            var radios = target.parentElement ? Array.prototype.slice.call(target.parentElement.querySelectorAll('input[type="radio"], input[type="checkbox"]')) : [];
+            return radios.find(function(node) {
+              var value = normalizeText(node.value || node.getAttribute('aria-label') || '');
+              return labelMatcher(value);
+            }) || null;
+          }
+          var labelTarget = findLabelTarget();
+          var inputTarget = findInputTarget(labelTarget);
+          var clickTargets = uniqueNodes([inputTarget, labelTarget, target].concat((stack || []).slice(0, 2)));
+          postDebug('dispatch-targets=' + clickTargets.slice(0, 4).map(describeNode).join('>'));
+          var events = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'];
+          if (inputTarget && ('checked' in inputTarget)) {
+            try { inputTarget.checked = true; } catch (e) {}
+            try { inputTarget.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+            try { inputTarget.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+          }
+          clickTargets.forEach(function(node) {
+            events.forEach(function(type) {
+              try {
+                var ctor = (type.indexOf('pointer') === 0 && window.PointerEvent) ? PointerEvent : MouseEvent;
+                node.dispatchEvent(new ctor(type, { bubbles: true, cancelable: true, view: window, clientX: centerX, clientY: centerY }));
+              } catch (e) {}
+            });
+            try { node.click && node.click(); } catch (e) {}
+          });
+          return true;
+        }
+        function clickSwitcher() {
+          var switcher = findBestTabTarget() || closestClickable(findSwitcher());
+          if (!switcher) return false;
+          var text = normalizeText(switcher.innerText || switcher.textContent || '');
+          var now = Date.now();
+          if (window.__xyzLastQrClickAt && now - window.__xyzLastQrClickAt < 1200) return true;
+          window.__xyzLastQrClickAt = now;
+          postDebug('click-switcher node=' + describeNode(switcher) + ' role=' + ((switcher.getAttribute && switcher.getAttribute('role')) || '') + ' text=' + text.slice(0, 32));
+          dispatchClick(switcher);
+          postStatus('正在尝试切到二维码登录...');
+          return true;
+        }
+        function qrCandidate() {
+          var selectors = [
+            'canvas',
+            'img[src*="qr"]',
+            'img[src*="QR"]',
+            'img[src*="qrcode"]',
+            'img[src*="Qrcode"]',
+            'img[alt*="qr"]',
+            'img[alt*="QR"]',
+            'img[alt*="二维码"]',
+            '[class*="qr"] img',
+            '[class*="QR"] img',
+            '[class*="qr"] canvas',
+            '[class*="QR"] canvas',
+            '[data-testid*="qr"]',
+            '[class*="qrcode"]',
+            '[class*="QRCode"]',
+            '[class*="qr-code"]',
+            'img[src*="/login"]'
+          ];
+          var nodes = Array.prototype.slice.call(document.querySelectorAll(selectors.join(',')));
+          return nodes.find(function(node) {
+            var rect = node.getBoundingClientRect ? node.getBoundingClientRect() : { width: 0, height: 0 };
+            var visible = isVisible(node);
+            var squareEnough = Math.abs(rect.width - rect.height) < 48;
+            var bigEnough = rect.width >= 48 && rect.height >= 48;
+            return visible && squareEnough && bigEnough;
+          }) || nodes[0] || null;
+        }
+        function revealQr() {
+          var qr = qrCandidate();
+          if (!qr) return false;
+          qr.scrollIntoView({ block: 'center', inline: 'center' });
+          if (qr.style) {
+            qr.style.transform = 'scale(1.5)';
+            qr.style.transformOrigin = 'center center';
+            qr.style.maxWidth = '220px';
+            qr.style.maxHeight = '220px';
+          }
+          var preview = '';
+          if (qr.tagName === 'CANVAS' && qr.toDataURL) {
+            preview = qr.toDataURL('image/png');
+          } else {
+            preview = normalizeUrl(qr.currentSrc || qr.src || qr.getAttribute('src') || '');
+          }
+          var link = normalizeUrl(
+            qr.getAttribute('data-url') ||
+            qr.getAttribute('data-qr-code') ||
+            qr.getAttribute('data-qrcode-link') ||
+            qr.getAttribute('href') ||
+            preview
+          );
+          if (preview) {
+            postQr(preview, link);
+            postDebug('qr-detected preview=' + preview.slice(0, 48) + ' link=' + link.slice(0, 48));
+            postStatus('二维码已就绪，请用手机扫码登录');
+          }
+          return !!preview;
+        }
+        function pageHasPhoneTab() {
+          var nodes = Array.prototype.slice.call(document.querySelectorAll('button, a, [role="button"], [role="tab"], div, span, p'));
+          return nodes.some(function(node) {
+            return isVisible(node) && normalizeText(node.innerText || node.textContent || '') === '手机号登录';
+          });
+        }
+        function findPhoneTabTarget() {
+          var nodes = Array.prototype.slice.call(document.querySelectorAll('button, a, [role="button"], [role="tab"], div, span, p, label'));
+          var labels = nodes.filter(function(node) {
+            return isVisible(node) && exactPhoneLabel(node.innerText || node.textContent || '');
+          });
+          for (var i = 0; i < labels.length; i += 1) {
+            var current = labels[i];
+            for (var depth = 0; current && current !== document.body && depth < 6; depth += 1) {
+              if (nodeHasTabSiblings(current)) return closestClickable(current) || current;
+              current = current.parentElement;
+            }
+          }
+          return labels[0] ? (closestClickable(labels[0]) || labels[0]) : null;
+        }
+        function openPhoneTab() {
+          var target = findPhoneTabTarget();
+          if (!target) return false;
+          dispatchClick(target, exactPhoneLabel);
+          return true;
+        }
+        function focusPhoneInput() {
+          var target = document.querySelector('input[type="tel"], input[inputmode="numeric"], input[name*="phone"], input[placeholder*="手机号"], input[placeholder*="手机"], input');
+          if (!target) return false;
+          try { target.scrollIntoView({ block: 'center', inline: 'center' }); } catch (e) {}
+          try { target.focus(); } catch (e) {}
+          return true;
+        }
+        function toggleAgreement() {
+          var inputs = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
+          var checkbox = inputs.find(function(node) { return !node.checked; });
+          if (checkbox) {
+            try { checkbox.checked = true; } catch (e) {}
+            try { checkbox.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+            try { checkbox.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+            try { checkbox.click(); } catch (e) {}
+            return true;
+          }
+          var labels = Array.prototype.slice.call(document.querySelectorAll('label, span, div, p'));
+          var agreement = labels.find(function(node) {
+            var text = normalizeText(node.innerText || node.textContent || '');
+            return isVisible(node) && (text.indexOf('用户协议') >= 0 || text.indexOf('隐私政策') >= 0);
+          });
+          if (!agreement) return false;
+          dispatchClick(agreement, function() { return true; });
+          return true;
+        }
+        function keepLoginTabsVisible() {
+          if (!document.body || document.getElementById('xyzLoginTopSpacer')) return;
+          var spacer = document.createElement('div');
+          spacer.id = 'xyzLoginTopSpacer';
+          spacer.style.height = '48px';
+          spacer.style.width = '1px';
+          document.body.insertBefore(spacer, document.body.firstChild);
+        }
+        window.__xyzLoginBridgeApi = {
+          openQrTab: function(source) {
+            var switched = clickSwitcher();
+            if (!switched) {
+              postStatus('没找到二维码登录入口，请先等页面完全显示');
+              return 'no-switcher:' + (source || 'manual');
+            }
+            return revealQr() ? 'qr-ready:' + (source || 'manual') : 'waiting-qr:' + (source || 'manual');
+          },
+          scanQr: function(source) {
+            return revealQr() ? 'qr-ready:' + (source || 'manual') : 'no-qr:' + (source || 'manual');
+          },
+          phoneLogin: function(source) {
+            keepLoginTabsVisible();
+            var switched = openPhoneTab();
+            var agreed = toggleAgreement();
+            var focused = focusPhoneInput();
+            postStatus(focused ? '已切到手机号登录，请输入手机号并获取验证码' : '已尝试切到手机号登录，请点击手机号输入框');
+            return 'phone-login:' + (source || 'manual') + ':switched=' + switched + ':agreed=' + agreed + ':focused=' + focused;
+          }
+        };
+        window.__xyzLoginBridgeTick = function() {
+          keepLoginTabsVisible();
+          if (revealQr()) return 'qr-ready';
+          if (pageHasPhoneTab()) {
+            if (!window.__xyzAutoSwitchedToQr) {
+              window.__xyzAutoSwitchedToQr = true;
+              var switched = clickSwitcher();
+              if (switched) return 'auto-switching-to-qr';
+            }
+            postDebug('phone-tab-visible');
+            postStatus('正在等待二维码加载...');
+            return 'phone-tab-visible';
+          }
+          postStatus('正在等待官方登录组件渲染...');
+          return 'waiting';
+        };
+        var observer = new MutationObserver(function() { window.__xyzLoginBridgeTick(); });
+        observer.observe(document.documentElement || document.body, { childList: true, subtree: true, attributes: true });
+        setInterval(function() { window.__xyzLoginBridgeTick(); }, 1200);
+        return window.__xyzLoginBridgeTick();
+      } catch (e) {
+        return 'inject-error:' + e.message;
+      }
+    })();
+""".trimIndent()
+
+private fun manualOpenQrScript(): String =
+    """(function(){ return window.__xyzLoginBridgeApi && window.__xyzLoginBridgeApi.openQrTab ? window.__xyzLoginBridgeApi.openQrTab('manual-button') : 'bridge-missing'; })();"""
+
+private fun manualScanQrScript(): String =
+    """(function(){ return window.__xyzLoginBridgeApi && window.__xyzLoginBridgeApi.scanQr ? window.__xyzLoginBridgeApi.scanQr('manual-button') : 'bridge-missing'; })();"""
+
+private fun manualPhoneLoginScript(): String =
+    """(function(){ return window.__xyzLoginBridgeApi && window.__xyzLoginBridgeApi.phoneLogin ? window.__xyzLoginBridgeApi.phoneLogin('manual-button') : 'bridge-missing'; })();"""
+
+private fun extractTokensFromCookies(): Pair<String, String?>? {
+    for (url in cookieUrls) {
+        val cookieHeader = CookieManager.getInstance().getCookie(url).orEmpty()
+        if (cookieHeader.isBlank()) {
+            continue
+        }
+        val accessToken = extractCookieValue(cookieHeader, "x-jike-access-token")
+        if (!accessToken.isNullOrBlank()) {
+            val refreshToken = extractCookieValue(cookieHeader, "x-jike-refresh-token")
+            AppLogger.info(
+                "web-login",
+                "Cookie scan success url=$url refreshPresent=${!refreshToken.isNullOrBlank()}"
+            )
+            return accessToken to refreshToken
+        }
+    }
+    return null
+}
+
+private fun extractCookieValue(cookieHeader: String, name: String): String? {
+    return cookieHeader
+        .split(";")
+        .asSequence()
+        .map { it.trim() }
+        .firstOrNull { it.startsWith("$name=") }
+        ?.substringAfter("=")
+        ?.takeIf { it.isNotBlank() }
+        ?.let { Uri.decode(it) }
+}

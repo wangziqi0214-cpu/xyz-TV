@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html lang="zh-hans">
+	<head><meta name="sentry-trace" content="fe1acb2b04df7e5a011d1685c4d6db84-dfa4869b3c2bc1f3-0" />
+		<script type="module" crossorigin src="https://static.xiaoyuzhoufm.com/podcaster-xyz/assets/polyfills-DwSfE-kh.js"></script>
+
+		<meta charset="UTF-8" />
+		<link rel="icon" href="https://static.xiaoyuzhoufm.com/podcaster-xyz/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="https://static.xiaoyuzhoufm.com/podcaster-xyz/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="https://static.xiaoyuzhoufm.com/podcaster-xyz/favicon-16x16.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="https://static.xiaoyuzhoufm.com/podcaster-xyz/apple-touch-icon.png" />
+		<link rel="manifest" href="https://static.xiaoyuzhoufm.com/podcaster-xyz/site.webmanifest" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>小宇宙主播后台</title>
+		<meta name="title" content="小宇宙主播后台" />
+		<meta property="og:title" content="小宇宙主播后台" />
+		<meta property="og:image" content="/xyz-logo.svg" />
+		<meta name="twitter:title" content="小宇宙主播后台" />
+		<meta name="twitter:image" content="/xyz-logo.svg" />
+		<script type="module" crossorigin src="https://static.xiaoyuzhoufm.com/podcaster-xyz/assets/index-Bts9tfoJ.js"></script>
+		<link rel="stylesheet" crossorigin href="https://static.xiaoyuzhoufm.com/podcaster-xyz/assets/index-CkjmZmKM.css">
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			// 支持浏览器的 UA 正则由 vite 在构建期注入（见 vite.config.ts 的 supportedBrowsersRegexPlugin），
+			// dev server 也会经过 transformIndexHtml，正常路径下都会被替换为真正的 UA 正则。
+			// 占位符 /Edge?\/(9{2}|\d{3,})\.\d+(\.\d+|)|Chrom(ium|e)\/(9{2}|\d{3,})\.\d+(\.\d+|)|(Maci|X1{2}).+ Version\/(17\.([2-9]|\d{2,})|(1[89]|[2-9]\d|\d{3,})\.\d+)([,.]\d+|)( \(\w+\)|)( Mobile\/\w+|) Safari\/|(CPU[ +]OS|iPhone[ +]OS|CPU[ +]iPhone|CPU IPhone OS|CPU iPad OS)[ +]+(17[._]([2-9]|\d{2,})|(1[89]|[2-9]\d|\d{3,})[._]\d+)([._]\d+|)/ 是合法 JS 字面量但不会匹配任何真实 UA，
+			// 因此一旦注入失败将 fail-closed —— 全部跳转到提示页，避免静默放行未适配的浏览器。
+			;(function () {
+				var ua = window.navigator.userAgent || ''
+				var supportedBrowsersRegex = /Edge?\/(9{2}|\d{3,})\.\d+(\.\d+|)|Chrom(ium|e)\/(9{2}|\d{3,})\.\d+(\.\d+|)|(Maci|X1{2}).+ Version\/(17\.([2-9]|\d{2,})|(1[89]|[2-9]\d|\d{3,})\.\d+)([,.]\d+|)( \(\w+\)|)( Mobile\/\w+|) Safari\/|(CPU[ +]OS|iPhone[ +]OS|CPU[ +]iPhone|CPU IPhone OS|CPU iPad OS)[ +]+(17[._]([2-9]|\d{2,})|(1[89]|[2-9]\d|\d{3,})[._]\d+)([._]\d+|)/
+				// iPad 全部拦截。iPadOS 13+ 将 UA 伪装成桌面 Mac Safari，需额外通过触点数检测。
+				var isIPad = /iPad/.test(ua) || (/Macintosh/.test(ua) && (window.navigator.maxTouchPoints || 0) > 1)
+				if (isIPad || !supportedBrowsersRegex.test(ua)) {
+					window.location.replace('/unsupported-browser.html')
+				}
+			})()
+		</script>
+		<script nomodule>
+			window.location.replace('/unsupported-browser.html')
+		</script>
+	</body>
+</html>
+

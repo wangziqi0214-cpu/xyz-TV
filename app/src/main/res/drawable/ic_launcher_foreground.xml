@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Foreground layer for adaptive icon -->
+    <!-- Podcast broadcast symbol: concentric arcs + center dot, white on coral -->
+    <group
+        android:translateX="31"
+        android:translateY="31">
+        <!-- Outer arc (largest) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M23,9.5C13.3,9.5 5.5,17.3 5.5,27C5.5,28.4 6.6,29.5 8,29.5C9.4,29.5 10.5,28.4 10.5,27C10.5,20.1 16.1,14.5 23,14.5C29.9,14.5 35.5,20.1 35.5,27C35.5,28.4 36.6,29.5 38,29.5C39.4,29.5 40.5,28.4 40.5,27C40.5,17.3 32.7,9.5 23,9.5Z" />
+        <!-- Middle arc -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M23,17.5C17.8,17.5 13.5,21.8 13.5,27C13.5,28.4 14.6,29.5 16,29.5C17.4,29.5 18.5,28.4 18.5,27C18.5,24.5 20.5,22.5 23,22.5C25.5,22.5 27.5,24.5 27.5,27C27.5,28.4 28.6,29.5 30,29.5C31.4,29.5 32.5,28.4 32.5,27C32.5,21.8 28.2,17.5 23,17.5Z" />
+        <!-- Center dot (microphone) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M23,25.5C21.6,25.5 20.5,26.6 20.5,28L20.5,32C20.5,33.4 21.6,34.5 23,34.5C24.4,34.5 25.5,33.4 25.5,32L25.5,28C25.5,26.6 24.4,25.5 23,25.5Z" />
+        <!-- TV indicator: small rectangle at bottom -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.7"
+            android:pathData="M15,39L31,39C31.8,39 32.5,39.7 32.5,40.5C32.5,41.3 31.8,42 31,42L15,42C14.2,42 13.5,41.3 13.5,40.5C13.5,39.7 14.2,39 15,39Z" />
+    </group>
+</vector>

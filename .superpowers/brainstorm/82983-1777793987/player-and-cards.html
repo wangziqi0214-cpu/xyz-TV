@@ -1,0 +1,120 @@
+<h2>播放器 + 卡片样式</h2>
+<p class="subtitle">两个子问题一起看：播放器页面布局、以及首页/列表里的单集/播客卡片样式。</p>
+
+<div class="section">
+<h3>1. 播放器页面</h3>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">A. 全屏沉浸式</div>
+    <div class="mockup-body" style="background:#08090b;padding:24px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;justify-content:space-between;color:#9fb0be;font-size:12px">
+        <span>← 返回</span>
+        <span>评论 · 详情</span>
+      </div>
+      <div style="text-align:center">
+        <div style="width:100px;height:100px;border-radius:20px;background:#252b34;margin:0 auto"></div>
+        <div style="color:#f5f5f5;font-size:20px;font-weight:800;margin-top:14px">单集标题</div>
+        <div style="color:#9fb0be;font-size:14px;margin-top:4px">播客名</div>
+      </div>
+      <div>
+        <div style="height:6px;background:#1e252c;border-radius:99px;margin-bottom:12px"><div style="width:38%;height:6px;background:#8ce68e;border-radius:99px"></div></div>
+        <div style="display:flex;justify-content:center;gap:32px;align-items:center;color:#f5f5f5">
+          <span style="font-size:14px">⏪ 15s</span>
+          <div style="width:52px;height:52px;border-radius:50%;background:#8ce68e;display:flex;align-items:center;justify-content:center;font-size:20px;color:#0b0d10">▶</div>
+          <span style="font-size:14px">15s ⏩</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">B. 分栏式（推荐）</div>
+    <div class="mockup-body" style="background:#08090b;padding:24px;min-height:240px;display:flex;gap:20px">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="width:80px;height:80px;border-radius:16px;background:#252b34"></div>
+          <div style="color:#f5f5f5;font-size:18px;font-weight:800;margin-top:12px">单集标题</div>
+          <div style="color:#9fb0be;font-size:13px;margin-top:4px">播客名 · 58 min</div>
+        </div>
+        <div>
+          <div style="height:6px;background:#1e252c;border-radius:99px;margin-bottom:12px"><div style="width:38%;height:6px;background:#8ce68e;border-radius:99px"></div></div>
+          <div style="display:flex;gap:24px;align-items:center;color:#f5f5f5">
+            <span style="font-size:13px">⏪</span>
+            <div style="width:44px;height:44px;border-radius:50%;background:#8ce68e;display:flex;align-items:center;justify-content:center;font-size:16px;color:#0b0d10">▶</div>
+            <span style="font-size:13px">⏩</span>
+            <span style="font-size:12px;color:#9fb0be">1.0x</span>
+          </div>
+        </div>
+      </div>
+      <div style="width:1px;background:#1e252c"></div>
+      <div style="width:180px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;font-weight:700;color:#8ce68e">单集简介</div>
+        <div style="font-size:12px;color:#9fb0be;line-height:1.5">这里显示单集描述文字、时间线、嘉宾等信息…</div>
+        <div style="margin-top:auto;display:flex;gap:8px">
+          <div style="background:#1e252c;border-radius:10px;padding:6px 12px;font-size:12px;color:#9fb0be">评论</div>
+          <div style="background:#1e252c;border-radius:10px;padding:6px 12px;font-size:12px;color:#9fb0be">详情</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px">
+<h3>2. 卡片样式</h3>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">播客卡片（方形封面）</div>
+    <div class="mockup-body" style="background:#0b0d10;padding:20px;display:flex;gap:14px">
+      <div style="display:flex;flex-direction:column;align-items:center;width:110px">
+        <div style="width:100px;height:100px;border-radius:18px;background:#8ce68e;box-shadow:0 0 0 3px rgba(140,230,142,.22)"></div>
+        <div style="color:#f5f5f5;font-size:13px;font-weight:700;margin-top:8px;text-align:center">故事 FM</div>
+        <div style="color:#9fb0be;font-size:11px">1.2k 订阅</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;width:110px">
+        <div style="width:100px;height:100px;border-radius:18px;background:#252b34"></div>
+        <div style="color:#f5f5f5;font-size:13px;font-weight:700;margin-top:8px;text-align:center">日谈公园</div>
+        <div style="color:#9fb0be;font-size:11px">856 订阅</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">单集卡片（横向宽卡）</div>
+    <div class="mockup-body" style="background:#0b0d10;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;gap:12px;background:#15191f;border-radius:16px;padding:12px;box-shadow:0 0 0 3px rgba(140,230,142,.18)">
+        <div style="width:64px;height:64px;border-radius:14px;background:#8ce68e;flex-shrink:0"></div>
+        <div style="display:flex;flex-direction:column;justify-content:center">
+          <div style="color:#f5f5f5;font-size:14px;font-weight:700">单集标题比较长的情况</div>
+          <div style="color:#9fb0be;font-size:12px;margin-top:2px">播客名 · 45 min · 2 天前</div>
+          <div style="height:4px;width:60%;background:#252b34;border-radius:99px;margin-top:6px"><div style="width:40%;height:4px;background:#8ce68e;border-radius:99px"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;background:#15191f;border-radius:16px;padding:12px">
+        <div style="width:64px;height:64px;border-radius:14px;background:#252b34;flex-shrink:0"></div>
+        <div style="display:flex;flex-direction:column;justify-content:center">
+          <div style="color:#f5f5f5;font-size:14px;font-weight:700">另一个单集标题</div>
+          <div style="color:#9fb0be;font-size:12px;margin-top:2px">播客名 · 32 min · 5 天前</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px">
+  <div class="options">
+    <div class="option" data-choice="player-fullscreen" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content"><h3>播放器：全屏沉浸</h3><p>居中封面 + 控制栏，简洁</p></div>
+    </div>
+    <div class="option" data-choice="player-split" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content"><h3>播放器：分栏式</h3><p>左控制 + 右简介/评论入口，信息更丰富</p></div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">卡片样式不需要二选一——播客用方封面卡片，单集用横向宽卡，两种共存。只需确认播放器风格。</p>

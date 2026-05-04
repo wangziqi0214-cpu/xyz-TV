@@ -1,0 +1,26 @@
+2026-05-03 13:11:22.222 [INFO] [logger] Logger initialized at /data/user/0/com.ultrazg.xyztv/files/logs/app.log
+2026-05-03 13:11:22.226 [INFO] [main] MainActivity created
+2026-05-03 13:11:22.232 [INFO] [main] TokenManager initialized
+2026-05-03 13:11:22.256 [INFO] [embedded] Start requested
+2026-05-03 13:11:22.278 [INFO] [embedded] Start accepted, baseUrl=http://127.0.0.1:23020/
+2026-05-03 13:11:22.279 [INFO] [embedded] Status update healthy=false message=Embedded backend is starting... error=<none>
+2026-05-03 13:11:22.280 [INFO] [main] Embedded backend start requested
+2026-05-03 13:11:22.281 [DEBUG] [embedded] refreshHealthAsync worker started
+2026-05-03 13:11:22.296 [DEBUG] [embedded] Ping OK: http://127.0.0.1:23020/ping
+2026-05-03 13:11:22.298 [INFO] [embedded] Status update healthy=true message=Embedded backend is healthy error=<none>
+2026-05-03 13:11:22.482 [INFO] [action] navigate | login
+2026-05-03 13:11:24.889 [INFO] [action] navigate | web-login
+2026-05-03 13:11:24.906 [INFO] [action] navigate | login
+2026-05-03 13:11:24.915 [INFO] [action] navigate | web-login-screen
+2026-05-03 13:11:25.095 [INFO] [action] navigate | web-login
+2026-05-03 13:11:25.095 [INFO] [web-login] Opening official login URL: https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F
+2026-05-03 13:11:25.184 [INFO] [action] navigate | login
+2026-05-03 13:11:25.211 [INFO] [action] navigate | web-login-screen
+2026-05-03 13:11:25.595 [INFO] [web-login] pageStarted https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F
+2026-05-03 13:11:25.614 [INFO] [web-login] visited https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F reload=false
+2026-05-03 13:11:25.969 [INFO] [action] navigate | web-login-screen
+2026-05-03 13:11:26.098 [INFO] [web-login] visited https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F reload=false
+2026-05-03 13:11:26.101 [INFO] [web-login] pageFinished https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F
+2026-05-03 13:11:26.167 [INFO] [web-login] pageReady result="waiting"
+2026-05-03 13:11:26.420 [INFO] [web-login] pageFinished https://accounts.xiaoyuzhoufm.com/login?clientId=xyz-web&redirectURL=https%3A%2F%2Fpodcaster.xiaoyuzhoufm.com%2F
+2026-05-03 13:11:26.423 [INFO] [web-login] pageReady result="waiting"

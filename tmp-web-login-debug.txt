@@ -1,0 +1,11 @@
+2026-05-03 13:14:09.965 [INFO] [logger] Logger initialized at /data/user/0/com.ultrazg.xyztv/files/logs/app.log
+2026-05-03 13:14:09.967 [INFO] [main] MainActivity created
+2026-05-03 13:14:09.971 [INFO] [main] TokenManager initialized
+2026-05-03 13:14:10.001 [INFO] [embedded] Start requested
+2026-05-03 13:14:10.017 [INFO] [embedded] Start accepted, baseUrl=http://127.0.0.1:23020/
+2026-05-03 13:14:10.018 [INFO] [embedded] Status update healthy=false message=Embedded backend is starting... error=<none>
+2026-05-03 13:14:10.019 [INFO] [main] Embedded backend start requested
+2026-05-03 13:14:10.019 [DEBUG] [embedded] refreshHealthAsync worker started
+2026-05-03 13:14:10.033 [DEBUG] [embedded] Ping OK: http://127.0.0.1:23020/ping
+2026-05-03 13:14:10.034 [INFO] [embedded] Status update healthy=true message=Embedded backend is healthy error=<none>
+2026-05-03 13:14:10.254 [INFO] [action] navigate | login

@@ -1,0 +1,80 @@
+<h2>焦点高亮 + 主题色调</h2>
+<p class="subtitle">TV 上焦点高亮是最核心的交互反馈。当前 App 用 #8CE68E 绿色，这里确认是否保留以及高亮方式。</p>
+
+<div class="section">
+<h3>焦点高亮方式</h3>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">A. 边框高亮（当前方式）</div>
+    <div class="mockup-body" style="background:#0b0d10;padding:20px;display:flex;gap:14px">
+      <div style="width:110px;height:80px;border-radius:16px;background:#252b34;border:3px solid #8ce68e;box-shadow:0 0 12px rgba(140,230,142,.25)"></div>
+      <div style="width:110px;height:80px;border-radius:16px;background:#252b34"></div>
+      <div style="width:110px;height:80px;border-radius:16px;background:#252b34"></div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">B. 缩放 + 阴影（SmartTube 风格）</div>
+    <div class="mockup-body" style="background:#0b0d10;padding:20px;display:flex;gap:14px;align-items:center">
+      <div style="width:120px;height:88px;border-radius:16px;background:#252b34;box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 2px rgba(140,230,142,.3);transform:scale(1.08);position:relative;z-index:1"></div>
+      <div style="width:110px;height:80px;border-radius:16px;background:#252b34"></div>
+      <div style="width:110px;height:80px;border-radius:16px;background:#252b34"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px">
+<h3>主题色调</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="keep-green" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0b0d10;border-radius:18px;padding:20px;display:flex;gap:14px;align-items:center">
+        <div style="width:48px;height:48px;border-radius:50%;background:#8ce68e"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#1a1f22"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#252b34"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#f4f7f8"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#ffc36d"></div>
+        <div style="color:#9fb0be;font-size:13px;margin-left:12px">绿 + 橙（现有配色）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 保留现有绿色</h3>
+      <p>#8CE68E 主色 + #FFC36D 点缀。已和小宇宙品牌一致，无需改动。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="cool-blue" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0b0d10;border-radius:18px;padding:20px;display:flex;gap:14px;align-items:center">
+        <div style="width:48px;height:48px;border-radius:50%;background:#64B5F6"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#1a1f22"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#252b34"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#f4f7f8"></div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#FF8A65"></div>
+        <div style="color:#9fb0be;font-size:13px;margin-left:12px">蓝 + 橙（更冷静）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 冷色蓝调</h3>
+      <p>#64B5F6 主色。更接近 SmartTube 的冷色调，但会丢失小宇宙品牌识别。</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px">
+  <div class="options">
+    <div class="option" data-choice="border-highlight" onclick="toggleSelect(this)">
+      <div class="letter">1</div>
+      <div class="content"><h3>边框高亮</h3><p>当前方式，清晰但略平</p></div>
+    </div>
+    <div class="option" data-choice="scale-highlight" onclick="toggleSelect(this)">
+      <div class="letter">2</div>
+      <div class="content"><h3>缩放 + 阴影</h3><p>SmartTube 风格，更有层次感</p></div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">推荐：保留绿色 + 缩放高亮。保持品牌一致性的同时升级焦点体验。</p>

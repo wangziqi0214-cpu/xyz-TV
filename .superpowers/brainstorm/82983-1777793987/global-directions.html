@@ -1,0 +1,106 @@
+<h2>XYZ TV 全局 UI/UX：3 个 SmartTube 参考方向</h2>
+<p class="subtitle">请重点看导航结构、首页密度、焦点反馈和播放入口。你可以点击一个方向，也可以直接在聊天里描述想法。</p>
+
+<div class="cards">
+  <div class="card" data-choice="smarttube-classic" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0b0d10;border-radius:18px;padding:18px;min-height:260px;color:#f5f5f5;font-family:Inter,system-ui;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)">
+        <div style="display:flex;gap:16px;height:230px">
+          <div style="width:78px;background:#15191f;border-radius:16px;padding:14px 10px;display:flex;flex-direction:column;gap:12px">
+            <div style="height:34px;border-radius:12px;background:#8ce68e"></div>
+            <div style="height:34px;border-radius:12px;background:#252b34"></div>
+            <div style="height:34px;border-radius:12px;background:#252b34"></div>
+            <div style="height:34px;border-radius:12px;background:#252b34"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:22px;font-weight:800">Xiaoyuzhou TV</div>
+              <div style="background:#20262e;border-radius:999px;padding:8px 16px;color:#9fb0be">Search  Profile  Settings</div>
+            </div>
+            <div style="height:78px;border-radius:20px;background:linear-gradient(90deg,#26333a,#182026);padding:16px">
+              <div style="font-size:18px;font-weight:700">继续收听</div>
+              <div style="margin-top:8px;width:60%;height:8px;background:#8ce68e;border-radius:999px"></div>
+            </div>
+            <div style="font-size:16px;font-weight:700">推荐</div>
+            <div style="display:flex;gap:12px">
+              <div style="width:120px;height:90px;border-radius:16px;background:#8ce68e;box-shadow:0 0 0 4px rgba(140,230,142,.28)"></div>
+              <div style="width:120px;height:90px;border-radius:16px;background:#2a333c"></div>
+              <div style="width:120px;height:90px;border-radius:16px;background:#2a333c"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. SmartTube Classic</h3>
+      <p>左侧 rail + 内容货架 + 顶部快捷入口。最贴近 SmartTube，适合全局统一和遥控器导航。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优点</h4><ul><li>用户一眼懂</li><li>全页面迁移路径清晰</li><li>焦点模型稳定</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>播客特色需要靠卡片细节体现</li><li>首页会更像视频 App</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="podcast-command-center" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#101314;border-radius:18px;padding:18px;min-height:260px;color:#f5f5f5;font-family:Inter,system-ui;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:22px;font-weight:800">Tonight's Listening</div>
+            <div style="display:flex;gap:8px"><span style="background:#8ce68e;color:#102010;border-radius:999px;padding:8px 14px">Home</span><span style="background:#20262e;border-radius:999px;padding:8px 14px">Search</span><span style="background:#20262e;border-radius:999px;padding:8px 14px">Mine</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.35fr .65fr;gap:14px">
+            <div style="height:130px;border-radius:24px;background:linear-gradient(135deg,#25313a,#14191d);padding:18px;box-shadow:0 0 0 4px rgba(140,230,142,.22)">
+              <div style="font-size:13px;color:#9fb0be">NOW / RESUME</div>
+              <div style="font-size:24px;font-weight:800;margin-top:10px">故事 FM · 最近播放</div>
+              <div style="margin-top:16px;height:10px;width:72%;background:#8ce68e;border-radius:99px"></div>
+            </div>
+            <div style="height:130px;border-radius:24px;background:#20272d;padding:18px"><div style="font-size:13px;color:#9fb0be">QUEUE</div><div style="font-size:20px;font-weight:700;margin-top:12px">稍后听 12</div></div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <div style="width:150px;height:82px;border-radius:18px;background:#2b343d"></div>
+            <div style="width:150px;height:82px;border-radius:18px;background:#2b343d"></div>
+            <div style="width:150px;height:82px;border-radius:18px;background:#2b343d"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Podcast Command Center</h3>
+      <p>保留 SmartTube 的干净和大焦点，但把首页变成“继续听/队列/订阅更新”的播客控制台。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优点</h4><ul><li>更符合小宇宙播客</li><li>播放入口更强</li><li>首页信息效率高</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>不像 SmartTube 那么直接</li><li>需要重排首页数据模块</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="immersive-player-first" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#08090b;border-radius:18px;padding:18px;min-height:260px;color:#f5f5f5;font-family:Inter,system-ui;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)">
+        <div style="height:230px;border-radius:26px;background:radial-gradient(circle at 25% 25%,#32404a,#11161a 54%,#08090b);padding:22px;display:flex;flex-direction:column;justify-content:space-between">
+          <div style="display:flex;justify-content:space-between"><div style="font-size:14px;color:#9fb0be">PLAYING</div><div style="background:#1c232b;border-radius:999px;padding:8px 14px">Browse while playing</div></div>
+          <div>
+            <div style="font-size:30px;font-weight:900">当前单集标题</div>
+            <div style="font-size:16px;color:#a9b4b8;margin-top:8px">播客名 · 58 min</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px">
+            <div style="width:58px;height:58px;border-radius:50%;background:#8ce68e;box-shadow:0 0 0 6px rgba(140,230,142,.24)"></div>
+            <div style="height:8px;flex:1;background:#2c333a;border-radius:99px"><div style="width:44%;height:8px;background:#8ce68e;border-radius:99px"></div></div>
+            <div style="width:58px;height:58px;border-radius:18px;background:#222a31"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Immersive Player First</h3>
+      <p>把播放器作为全局核心，首页和详情页围绕当前播放、队列、相关推荐展开。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优点</h4><ul><li>最适合“电视听播客”</li><li>播放体验高级</li><li>能形成差异化</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>全局重构最大</li><li>非播放页面需要更多设计</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">我的初步推荐：B 为主，吸收 A 的侧边导航和焦点规范，播放页采用 C 的沉浸式控制。</p>

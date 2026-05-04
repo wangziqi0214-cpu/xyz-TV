@@ -1,0 +1,68 @@
+<h2>侧边 Rail 导航入口设计</h2>
+<p class="subtitle">SmartTube 风格的左侧 rail 通常只放 4-6 个图标入口。当前 App 有 20+ 页面，需要决定哪些放进一级 rail，哪些折进二级。点选你偏好的方案。</p>
+
+<div class="cards">
+  <div class="card" data-choice="minimal-5" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0b0d10;border-radius:18px;padding:18px;min-height:300px;color:#f5f5f5;font-family:Inter,system-ui;display:flex;gap:16px">
+        <div style="width:72px;background:#15191f;border-radius:16px;padding:14px 8px;display:flex;flex-direction:column;gap:14px;align-items:center">
+          <div style="width:44px;height:44px;border-radius:14px;background:#8ce68e;display:flex;align-items:center;justify-content:center;font-size:18px">🏠</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">🔍</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">📥</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">⚙️</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px;font-weight:700;color:#8ce68e">5 个一级入口</div>
+          <div style="font-size:13px;color:#9fb0be;line-height:1.7">
+            <b>首页</b> — 推荐 / 发现 / 编辑精选 / 榜单<br>
+            <b>搜索</b> — 播客 + 单集搜索<br>
+            <b>订阅</b> — 订阅更新 + 我的订阅列表<br>
+            <b>我的</b> — 收藏 / 历史 / 喜欢 / 关注 / 数据<br>
+            <b>设置</b> — 布局 / 账号 / 登出
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#6a7a86">分类/榜单/编辑精选等嵌入首页货架行</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 极简 5 入口</h3>
+      <p>最接近 SmartTube。首页承担发现，"我的"承担所有个人功能。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="balanced-7" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0b0d10;border-radius:18px;padding:18px;min-height:300px;color:#f5f5f5;font-family:Inter,system-ui;display:flex;gap:16px">
+        <div style="width:72px;background:#15191f;border-radius:16px;padding:14px 8px;display:flex;flex-direction:column;gap:10px;align-items:center">
+          <div style="width:44px;height:44px;border-radius:14px;background:#8ce68e;display:flex;align-items:center;justify-content:center;font-size:18px">🏠</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">🔍</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">📥</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">🏷️</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">🕐</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>
+          <div style="width:44px;height:44px;border-radius:14px;background:#252b34;display:flex;align-items:center;justify-content:center;font-size:18px">⚙️</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px;font-weight:700;color:#8ce68e">7 个一级入口</div>
+          <div style="font-size:13px;color:#9fb0be;line-height:1.7">
+            <b>首页</b> — 推荐 / 编辑精选 / 榜单<br>
+            <b>搜索</b> — 播客 + 单集搜索<br>
+            <b>订阅</b> — 订阅更新 + 我的订阅<br>
+            <b>分类</b> — 分类 Hub 入口<br>
+            <b>历史</b> — 收听历史 + 继续收听<br>
+            <b>我的</b> — 收藏 / 喜欢 / 关注 / 数据<br>
+            <b>设置</b> — 布局 / 账号 / 登出
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#6a7a86">历史和分类独立出来，减少首页和我的深度</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 均衡 7 入口</h3>
+      <p>把历史和分类提升为一级，首页更干净，个人页更轻。</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle">SmartTube 实际用了 Home / Subscriptions / History / Settings 这 4 个一级 + 搜索在顶栏。播客 App 需要的功能更多，推荐 A 或 B。</p>
