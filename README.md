@@ -39,13 +39,9 @@
 
 ## 界面预览
 
-| 首页 | 播放界面 | 播客详情 |
-|------|----------|----------|
-| <img src="home-or-login.png" width="280"> | <img src="player-screen.png" width="280"> | <img src="podcast-screen.png" width="280"> |
-
-| 节目详情 | 分类浏览 | 个人主页 |
-|----------|----------|----------|
-| <img src="detail-screen.png" width="280"> | <img src="step-category.png" width="280"> | <img src="current-start.png" width="280"> |
+<p align="center">
+  <img src="home-or-login.png" alt="小宇宙 TV 首页" width="720">
+</p>
 
 ## 技术栈
 
